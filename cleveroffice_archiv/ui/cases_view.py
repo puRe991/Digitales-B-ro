@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
+from qt_compat import exec_qt, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
 from ui.common import show_error
 
 def fill(table, headers, rows):
@@ -12,7 +12,7 @@ class CasesView(QWidget):
     def __init__(self): super().__init__(); self.table=QTableWidget(); b=QPushButton("Neue Akte"); b.clicked.connect(self.add); l=QVBoxLayout(self); l.addWidget(b); l.addWidget(self.table); self.refresh()
     def add(self):
         d=CaseDialog(self)
-        if d.exec():
+        if exec_qt(d):
             try: create_case(d.title.text(), d.desc.toPlainText(), d.type.currentData(), d.status.currentData()); self.refresh()
             except Exception as e: show_error(self,e)
     def refresh(self): fill(self.table,["id","title","case_type","status","created_at"],list_cases())

@@ -1,5 +1,5 @@
-from PySide6.QtCore import QDate
-from PySide6.QtWidgets import (QComboBox, QDateEdit, QDialog, QFileDialog, QFormLayout,
+from qt_compat import QDate
+from qt_compat import (QComboBox, QDateEdit, QDialog, QFileDialog, QFormLayout,
                                QHBoxLayout, QLineEdit, QPushButton, QTextEdit, QVBoxLayout)
 from services.case_service import case_options
 
