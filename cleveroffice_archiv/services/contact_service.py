@@ -1,5 +1,5 @@
 from database import get_connection
-from services.document_service import now_iso
+from services.shared import now_iso
 
 
 def create_contact(name, organization="", role="", phone="", email="", address="", notes="") -> int:
