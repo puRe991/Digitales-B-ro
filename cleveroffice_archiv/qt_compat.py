@@ -40,7 +40,22 @@ except ImportError as exc:  # pragma: no cover - depends on local installation
         "installiert sind, fehlen wahrscheinlich Betriebssystem-Bibliotheken für Qt."
     ) from exc
 
+
+def exec_qt(obj) -> int:
+    """Führt Qt-Objekte kompatibel mit PyQt5/PySide aus.
+
+    PyQt5 nutzt historisch ``exec_()``, neuere Bindings stellen zusätzlich
+    ``exec()`` bereit. Der Helper verhindert Binding-spezifische Aufrufe in
+    Dialogen und beim QApplication-Eventloop.
+    """
+
+    exec_method = getattr(obj, "exec", None) or getattr(obj, "exec_", None)
+    if exec_method is None:
+        raise AttributeError(f"{type(obj).__name__} besitzt weder exec() noch exec_().")
+    return int(exec_method())
+
 __all__ = [
+    "exec_qt",
     "QApplication",
     "QComboBox",
     "QDate",

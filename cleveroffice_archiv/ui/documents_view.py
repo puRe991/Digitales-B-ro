@@ -1,4 +1,4 @@
-from qt_compat import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
+from qt_compat import exec_qt, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
 from ui.common import show_error
 
 def fill(table, headers, rows):
@@ -15,7 +15,7 @@ class DocumentsView(QWidget):
         super().__init__(); self.search=QLineEdit(); self.search.setPlaceholderText("Suche nach Titel, Datei, Kategorie oder Notiz"); self.search.textChanged.connect(self.refresh); self.table=QTableWidget(); self.table.cellDoubleClicked.connect(self.open_doc); b=QPushButton("Dokument importieren"); b.clicked.connect(self.add); top=QHBoxLayout(); top.addWidget(self.search); top.addWidget(b); l=QVBoxLayout(self); l.addLayout(top); l.addWidget(self.table); self.refresh()
     def add(self):
         d=DocumentDialog(self)
-        if d.exec():
+        if exec_qt(d):
             try: create_document(d.title.text(), d.file.text(), d.date.date().toString("yyyy-MM-dd"), d.category.text(), d.case.currentData(), d.status.currentData(), d.notes.toPlainText()); self.refresh()
             except Exception as e: show_error(self,e)
     def refresh(self): self.rows=list_documents(self.search.text()); fill(self.table,["id","title","original_filename","category","case_title","status","created_at"],self.rows)
