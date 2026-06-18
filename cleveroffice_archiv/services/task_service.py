@@ -1,14 +1,5 @@
-from datetime import datetime
-from typing import Any, Optional
 from database import get_connection
-
-def now_iso() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def optional_id(value: Any) -> Optional[int]:
-    if value in (None, "", 0, "0"):
-        return None
-    return int(value)
+from services.shared import now_iso, optional_id, validate_limit
 
 def create_task(title, description="", due_date="", status="offen", case_id=None, document_id=None) -> int:
     if not title.strip():
@@ -24,7 +15,8 @@ def list_tasks(open_only=False, limit=None):
     if open_only:
         sql += " WHERE t.status != 'erledigt'"
     sql += " ORDER BY COALESCE(t.due_date, '9999-12-31') ASC, t.created_at DESC"
-    if limit:
-        sql += " LIMIT ?"; params.append(limit)
+    if limit is not None:
+        sql += " LIMIT ?"
+        params.append(validate_limit(limit))
     with get_connection() as conn:
         return conn.execute(sql, params).fetchall()

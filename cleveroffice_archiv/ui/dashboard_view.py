@@ -2,7 +2,7 @@ from qt_compat import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QT
 from services.deadline_service import list_deadlines
 from services.task_service import list_tasks
 from services.document_service import recent_documents
-from ui.documents_view import fill
+from ui.common import fill_table
 
 
 class DashboardView(QWidget):
@@ -22,6 +22,6 @@ class DashboardView(QWidget):
         self.refresh()
 
     def refresh(self):
-        fill(self.deadlines, ["id", "title", "due_date", "status", "case_title"], list_deadlines(True, 8))
-        fill(self.tasks, ["id", "title", "due_date", "status", "case_title"], list_tasks(True, 8))
-        fill(self.docs, ["id", "title", "original_filename", "category", "created_at"], recent_documents(8))
+        fill_table(self.deadlines, ["id", "title", "due_date", "status", "case_title"], list_deadlines(True, 8))
+        fill_table(self.tasks, ["id", "title", "due_date", "status", "case_title"], list_tasks(True, 8))
+        fill_table(self.docs, ["id", "title", "original_filename", "category", "created_at"], recent_documents(8))

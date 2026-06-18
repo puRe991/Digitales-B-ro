@@ -1,14 +1,5 @@
-from datetime import datetime
-from typing import Any, Optional
 from database import get_connection
-
-def now_iso() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def optional_id(value: Any) -> Optional[int]:
-    if value in (None, "", 0, "0"):
-        return None
-    return int(value)
+from services.shared import now_iso, optional_id, validate_limit
 
 def create_deadline(title, due_date, reminder_date="", status="offen", case_id=None, document_id=None) -> int:
     if not title.strip():
@@ -26,7 +17,8 @@ def list_deadlines(open_only=False, limit=None):
     if open_only:
         sql += " WHERE dl.status = 'offen'"
     sql += " ORDER BY dl.due_date ASC"
-    if limit:
-        sql += " LIMIT ?"; params.append(limit)
+    if limit is not None:
+        sql += " LIMIT ?"
+        params.append(validate_limit(limit))
     with get_connection() as conn:
         return conn.execute(sql, params).fetchall()

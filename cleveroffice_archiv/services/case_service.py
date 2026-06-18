@@ -1,14 +1,5 @@
-from datetime import datetime
-from typing import Any, Optional
 from database import get_connection
-
-def now_iso() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def optional_id(value: Any) -> Optional[int]:
-    if value in (None, "", 0, "0"):
-        return None
-    return int(value)
+from services.shared import now_iso
 
 def create_case(title, description="", case_type="Privat", status="aktiv") -> int:
     if not title.strip():
