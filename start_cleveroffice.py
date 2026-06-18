@@ -19,6 +19,7 @@ REQUIREMENTS_FILE = APP_DIR / "requirements.txt"
 MAIN_FILE = APP_DIR / "main.py"
 
 MIN_QT_PYTHON = (3, 8)
+QT_PACKAGE_NAME = "PyQt5"
 
 
 class StarterError(RuntimeError):
@@ -58,7 +59,9 @@ def _ensure_virtual_environment() -> Path:
     if python_path.exists():
         return python_path
 
-    _validate_python_runtime(sys.version_info, executable=Path(sys.executable))
+    _validate_python_runtime(
+        sys.version_info, implementation=sys.implementation.name, executable=Path(sys.executable)
+    )
     print("Virtuelle Umgebung wird erstellt ...")
     _run([sys.executable, "-m", "venv", str(VENV_DIR)], cwd=ROOT_DIR)
     if not python_path.exists():
@@ -66,12 +69,13 @@ def _ensure_virtual_environment() -> Path:
     return python_path
 
 
-def _python_runtime(python_path: Path) -> tuple[tuple[int, int, int], str]:
+def _python_runtime(python_path: Path) -> tuple[tuple[int, int, int], str, str]:
     command = [
         str(python_path),
         "-c",
         "import sys; "
         "print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'); "
+        "print(sys.implementation.name); "
         "print(sys.executable)",
     ]
     completed = subprocess.run(command, cwd=APP_DIR, check=False, capture_output=True, text=True)
@@ -80,36 +84,45 @@ def _python_runtime(python_path: Path) -> tuple[tuple[int, int, int], str]:
         raise StarterError(f"Python der virtuellen Umgebung konnte nicht geprüft werden: {details}")
 
     lines = completed.stdout.splitlines()
-    if len(lines) < 2:
+    if len(lines) < 3:
         raise StarterError("Python der virtuellen Umgebung lieferte unvollständige Versionsinformationen.")
 
     version = tuple(int(part) for part in lines[0].split(".", maxsplit=2))
-    return version, lines[1].strip()
+    return version, lines[1].strip(), lines[2].strip()
 
 
-def _validate_python_runtime(version_info: tuple[int, ...], *, executable: Path) -> None:
+def _validate_python_runtime(
+    version_info: tuple[int, ...], *, implementation: str, executable: Path
+) -> None:
+    if implementation != "cpython":
+        raise StarterError(
+            "Die Qt-Oberfläche benötigt CPython.\n"
+            f"Gefunden: {implementation} ({executable})\n"
+            "Installieren Sie CPython von python.org und erstellen Sie die virtuelle Umgebung neu."
+        )
+
     major_minor = version_info[:2]
     if major_minor < MIN_QT_PYTHON:
         raise StarterError(
             "Die Qt-Oberfläche kann mit dieser Python-Version nicht installiert werden.\n"
             f"Gefunden: Python {'.'.join(map(str, version_info[:3]))} ({executable})\n"
-            "Benötigt: CPython ab 3.8. Installieren Sie eine aktuellere Python-Version "
-            "und erstellen Sie die virtuelle Umgebung neu."
+            f"Benötigt: CPython ab {MIN_QT_PYTHON[0]}.{MIN_QT_PYTHON[1]} für {QT_PACKAGE_NAME}. "
+            "Installieren Sie eine aktuellere Python-Version und erstellen Sie die virtuelle Umgebung neu."
         )
 
 
 def _validate_venv_runtime(python_path: Path) -> None:
-    version, executable = _python_runtime(python_path)
-    _validate_python_runtime(version, executable=Path(executable))
+    version, implementation, executable = _python_runtime(python_path)
+    _validate_python_runtime(version, implementation=implementation, executable=Path(executable))
 
 
 def _qt_install_hint() -> str:
     return (
         "Hinweis zur Qt-Installation:\n"
-        "- Dieses Projekt nutzt PyQt5, weil PySide6 keine 32-Bit-Windows-Umgebungen unterstützt.\n"
+        f"- Dieses Projekt nutzt {QT_PACKAGE_NAME}, weil PySide6 keine 32-Bit-Windows-Umgebungen unterstützt.\n"
         "- Wenn Sie Python aktualisiert haben, löschen Sie `cleveroffice_archiv\\.venv` und starten Sie erneut.\n"
-        "- Firmen-Proxys oder private Paketquellen können PyQt5-Wheels blockieren; testen Sie dann "
-        "`python -m pip index versions PyQt5`."
+        f"- Firmen-Proxys oder private Paketquellen können {QT_PACKAGE_NAME}-Wheels blockieren; testen Sie dann "
+        f"`python -m pip index versions {QT_PACKAGE_NAME}`."
     )
 
 
