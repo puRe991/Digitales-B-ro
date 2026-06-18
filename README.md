@@ -10,6 +10,8 @@ Doppelklicke `start_cleveroffice.bat` oder führe im Terminal aus:
 start_cleveroffice.bat
 ```
 
+Der Starter funktioniert auch mit 32-Bit-Windows/Python. Die Oberfläche nutzt deshalb PyQt5 statt PySide6, weil PySide6 keine passenden 32-Bit-Windows-Pakete bereitstellt.
+
 ### macOS/Linux
 
 ```bash
@@ -23,3 +25,7 @@ Wenn die Umgebung bereits vorbereitet ist, kannst du die Installation übersprin
 ```bash
 python start_cleveroffice.py --skip-install
 ```
+
+### Fehlerbehebung
+
+Wenn die Installation nach einem Python-Wechsel weiterhin fehlschlägt, lösche den Ordner `cleveroffice_archiv/.venv` und starte erneut. Der Starter erstellt die Umgebung dann mit dem aktuell gefundenen Python neu.

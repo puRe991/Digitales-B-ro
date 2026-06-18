@@ -12,6 +12,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
+Hinweis für 32-Bit-Windows: Das Projekt nutzt PyQt5, weil PySide6 keine passenden 32-Bit-Windows-Wheels veröffentlicht. Wenn die virtuelle Umgebung mit einer falschen Python-Version erstellt wurde, lösche `.venv` und führe die Installation erneut aus.
+
 ## Spätere Ausbaustufen
 
 - OCR für gescannte Dokumente
