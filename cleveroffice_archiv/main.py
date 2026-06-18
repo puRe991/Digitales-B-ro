@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMessageBox
+from qt_compat import QApplication, QMessageBox
 from database import initialize_database
 from ui.main_window import MainWindow
 

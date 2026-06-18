@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTableWidget
+from qt_compat import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTableWidget
 from services.deadline_service import list_deadlines
 from services.task_service import list_tasks
 from services.document_service import recent_documents

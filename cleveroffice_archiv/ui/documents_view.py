@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
+from qt_compat import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
 from ui.common import show_error
 
 def fill(table, headers, rows):
@@ -6,7 +6,7 @@ def fill(table, headers, rows):
     for r,row in enumerate(rows):
         for c,key in enumerate(headers): table.setItem(r,c,QTableWidgetItem(str(row.get(key, "") or "")))
     table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-from PySide6.QtWidgets import QLineEdit
+from qt_compat import QLineEdit
 from file_manager import open_file
 from ui.forms import DocumentDialog
 from services.document_service import create_document, list_documents

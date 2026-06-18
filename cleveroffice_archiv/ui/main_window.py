@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QListWidget, QStackedWidget, QWidget, QHBoxLayout
+from qt_compat import QMainWindow, QListWidget, QStackedWidget, QWidget, QHBoxLayout
 from ui.cases_view import CasesView
 from ui.contacts_view import ContactsView
 from ui.dashboard_view import DashboardView
